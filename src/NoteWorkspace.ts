@@ -297,6 +297,10 @@ export class NoteWorkspace {
   // `left` to be fsPath
   // `right` to be the ref word [[wiki-link]]
   static noteNamesFuzzyMatch(left: string, right: string): boolean {
+    // Support The Archive / Zettlr-style IDs
+    const id = right.match(/^\d{12}$/);
+    if (id) { return left.includes(id[0]); }
+
     return (
       this.normalizeNoteNameForFuzzyMatch(left).toLowerCase() ==
       this.normalizeNoteNameForFuzzyMatchText(right).toLowerCase()

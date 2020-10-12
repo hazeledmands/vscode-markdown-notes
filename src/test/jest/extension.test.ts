@@ -72,6 +72,7 @@ describe('NoteWorkspace.noteNamesFuzzyMatch', () => {
     expect(
       NoteWorkspace.noteNamesFuzzyMatch('dir/sub/the-heat-is-on.markdown', 'the-heat-is-on')
     ).toBeTruthy();
+    expect(NoteWorkspace.noteNamesFuzzyMatch('202010121425_this_is_a_file.md', '202010121425')).toBeTruthy();
     expect(NoteWorkspace.noteNamesFuzzyMatch('[[wiki-link.md]]', 'wiki-link.md')).toBeTruthy();
     expect(NoteWorkspace.noteNamesFuzzyMatch('[[wiki-link]]', 'wiki-link.md')).toBeTruthy();
     expect(NoteWorkspace.noteNamesFuzzyMatch('[[wiki link]]', 'wiki-link.md')).toBeTruthy();
