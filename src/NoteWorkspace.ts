@@ -341,9 +341,10 @@ export class NoteWorkspace {
     }
   }
 
-  static noteFileNameFromTitle(title: string, id:string = ""): string {
-    let t = `${id}_${this.slugifyTitle(title)}`;
-    return t.match(this.rxFileExtensions()) ? t : `${t}.${this.defaultFileExtension()}`;
+  static noteFileNameFromTitle(title: string, id: string = ""): string {
+    const slugTitle = this.slugifyTitle(title);
+    let fullTitle = [id, slugTitle].filter(s => s.length > 0).join('_');
+    return fullTitle.match(this.rxFileExtensions()) ? fullTitle : `${fullTitle}.${this.defaultFileExtension()}`;
   }
 
   static newNote(context: vscode.ExtensionContext) {
