@@ -1,14 +1,18 @@
 import * as vscode from 'vscode';
-import { RefType, getRefAt } from './Ref';
+import { Ref, RefType, getRefAt } from './Ref';
 import { NoteWorkspace } from './NoteWorkspace';
 import { NoteParser } from './NoteParser';
 
 class MarkdownFileCompletionItem extends vscode.CompletionItem {
   fsPath?: string;
 
-  constructor(label: string, kind?: vscode.CompletionItemKind, fsPath?: string) {
-    super(label, kind);
+  constructor(label: string, fsPath: string) {
+    super(label, vscode.CompletionItemKind.File);
     this.fsPath = fsPath;
+
+    // Support The Archive / Zettlr-style IDs
+    const id = label.match(/^\d{12}/);
+    if (id) { this.insertText = id[0]; }
   }
 }
 // Given a document and position, check whether the current word matches one of
@@ -40,14 +44,13 @@ export class MarkdownFileCompletionItemProvider implements vscode.CompletionItem
         });
       case RefType.WikiLink:
         return (await NoteWorkspace.noteFiles()).map((f) => {
-          let kind = vscode.CompletionItemKind.File;
           let label = NoteWorkspace.wikiLinkCompletionForConvention(f, document);
-          let item = new MarkdownFileCompletionItem(label, kind, f.fsPath);
+          let item = new MarkdownFileCompletionItem(label, f.fsPath);
           if (ref && ref.range) {
             item.range = ref.range;
           }
           return item;
-        });
+        }).filter(item => item.insertText !== ref.word);
       default:
         return [];
     }
