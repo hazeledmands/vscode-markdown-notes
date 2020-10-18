@@ -341,8 +341,8 @@ export class NoteWorkspace {
     }
   }
 
-  static noteFileNameFromTitle(title: string): string {
-    let t = this.slugifyTitle(title);
+  static noteFileNameFromTitle(title: string, id:string = ""): string {
+    let t = `${id}_${this.slugifyTitle(title)}`;
     return t.match(this.rxFileExtensions()) ? t : `${t}.${this.defaultFileExtension()}`;
   }
 
@@ -350,7 +350,7 @@ export class NoteWorkspace {
     // console.debug('newNote');
     const inputBoxPromise = vscode.window.showInputBox({
       prompt:
-        "Enter a 'Title Case Name' to create `title-case-name.md` with '# Title Case Name' at the top.",
+        "Enter a 'Title Case Name' to create `newid-title-case-name.md` with '# Title Case Name' at the top.",
       value: '',
     });
 
@@ -402,7 +402,7 @@ export class NoteWorkspace {
         noteDirectory = activePath;
       } else {
         vscode.window.showWarningMessage(
-          `Error. newNoteDirectory was NEW_NOT_SAME_AS_ACTIVE_NOTE but no active note directory found. Using WORKSPACE_ROOT.`
+          `Error. newNoteDirectory was NEW_NOTE_SAME_AS_ACTIVE_NOTE but no active note directory found. Using WORKSPACE_ROOT.`
         );
         noteDirectory = this.NEW_NOTE_WORKSPACE_ROOT;
       }
@@ -430,7 +430,8 @@ export class NoteWorkspace {
       noteDirectory = workspacePath;
     }
 
-    const filename = NoteWorkspace.noteFileNameFromTitle(noteTitle);
+    const zettelId = generateZettelId();
+    const filename = NoteWorkspace.noteFileNameFromTitle(noteTitle, zettelId);
     const filepath = join(noteDirectory, filename);
 
     const fileAlreadyExists = existsSync(filepath);
@@ -440,7 +441,7 @@ export class NoteWorkspace {
       );
     } else {
       // create the file if it does not exist
-      const contents = NoteWorkspace.newNoteContent(noteTitle);
+      const contents = NoteWorkspace.newNoteContent(noteTitle, zettelId);
       writeFileSync(filepath, contents);
     }
 
@@ -450,7 +451,7 @@ export class NoteWorkspace {
     };
   }
 
-  static newNoteContent(noteName: string) {
+  static newNoteContent(noteName: string, zettelId: string = "") {
     const template = NoteWorkspace.newNoteTemplate();
     const d = (new Date().toISOString().match(/(\d{4}-\d{2}-\d{2})/) || '')[0]; // "2020-08-25"
     const t = new Date().toISOString(); // "2020-08-25T03:21:49.735Z"
@@ -458,7 +459,8 @@ export class NoteWorkspace {
       .replace(/\\n/g, '\n')
       .replace(/\$\{noteName\}/g, noteName)
       .replace(/\$\{timestamp\}/g, t)
-      .replace(/\$\{date\}/g, d);
+      .replace(/\$\{date\}/g, d)
+      .replace(/\$\{ID\}/g, zettelId);
     return contents;
   }
 
@@ -485,3 +487,16 @@ export class NoteWorkspace {
     return this.noteFileCache;
   }
 }
+function generateZettelId() {
+  const date = new Date();
+  const padNumber = (val: number, len: number) => val.toString().padStart(len, '0');
+  const id = [
+    padNumber(date.getFullYear(), 4),
+    padNumber(date.getMonth(), 2),
+    padNumber(date.getDate(), 2),
+    padNumber(date.getHours(), 2),
+    padNumber(date.getMinutes(), 2),
+  ].join('');
+  return id;
+}
+
