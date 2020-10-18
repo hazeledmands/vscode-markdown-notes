@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { basename, dirname, isAbsolute, join, normalize, relative } from 'path';
 import { existsSync, writeFileSync } from 'fs';
 import findNonIgnoredFiles from './findNonIgnoredFiles';
+import ZettelkastenUtilities from './ZettelkastenUtilities';
 const GithubSlugger = require('github-slugger');
 const SLUGGER = new GithubSlugger();
 
@@ -431,7 +432,7 @@ export class NoteWorkspace {
       noteDirectory = workspacePath;
     }
 
-    const zettelId = generateZettelId();
+    const zettelId = ZettelkastenUtilities.generateId();
     const filename = NoteWorkspace.noteFileNameFromTitle(noteTitle, zettelId);
     const filepath = join(noteDirectory, filename);
 
@@ -487,17 +488,5 @@ export class NoteWorkspace {
   static noteFilesFromCache(): Array<vscode.Uri> {
     return this.noteFileCache;
   }
-}
-function generateZettelId() {
-  const date = new Date();
-  const padNumber = (val: number, len: number) => val.toString().padStart(len, '0');
-  const id = [
-    padNumber(date.getFullYear(), 4),
-    padNumber(date.getMonth(), 2),
-    padNumber(date.getDate(), 2),
-    padNumber(date.getHours(), 2),
-    padNumber(date.getMinutes(), 2),
-  ].join('');
-  return id;
 }
 
