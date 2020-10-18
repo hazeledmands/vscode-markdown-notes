@@ -1,16 +1,22 @@
-# Markdown Notes for VS Code
+# Zettelkasten Markdown Notes for VS Code
 
-Use `[[wiki-links]]`, `backlinks`, and `#tags` for fast-navigation of markdown notes.
+This package is a fork of the excellent [vscode-markdown-notes](https://marketplace.visualstudio.com/items?itemName=kortina.vscode-markdown-notes) package, made to be a bit more compatible for Zettelkasten workflows introduced by apps like Zettlr or
+The Archive.
 
-Automatically create notes from new inline `[[wiki-links]]`.
+Warning: Ideally I'd love to get these merged into the upstream, and if that happens, this package will be deprecated in favor of the original.
+Publishing it this way now because I'd like to make use of the changes I made!
+
+Features:
+
+ - Use `[[wiki-links]]`, `backlinks`, and `#tags` for fast-navigation of markdown notes.
+ - Automatically create notes from new inline `[[wiki-links]]`.
+ - Autocomplete to any files in the directory when you start typing a `[[link]]`
+ - Add timestamp-based IDs before all new files that get generated
+ - Generate new IDs with a command
 
 Bring some of the awesome features from apps like [Notational Velocity](http://notational.net/), [nvalt](https://brettterpstra.com/projects/nvalt/), [Bear](https://bear.app/), [FSNotes](https://fsnot.es/), [Obsidian](https://obsidian.md/) to VS Code, where you also have (1) Vim key bindings and (2) excellent extensibility.
 
-[Install from the VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=kortina.vscode-markdown-notes). See more in the blog post: [Suping Up VS Code as a Markdown Notebook](https://kortina.nyc/essays/suping-up-vs-code-as-a-markdown-notebook/).
-
-For common issues / workarounds, please see [TROUBLESHOOTING-FAQ.md](https://github.com/kortina/vscode-markdown-notes/blob/master/TROUBLESHOOTING-FAQ.md)
-
-Also, take a look at the [RECOMMENDED-SETTINGS.md](https://github.com/kortina/vscode-markdown-notes/blob/master/RECOMMENDED-SETTINGS.md)
+[Install from the VSCode Marketplace](https://marketplace.visualstudio.com/items?itemName=maxedmands.vscode-zettel-markdown-notes).
 
 ### `[[wiki-links]]`
 
@@ -34,6 +40,19 @@ You can bind this to a keyboard shortcut by adding to your `keybindings.json`:
     {
         "key": "alt+shift+n",
         "command": "vscodeMarkdownNotes.newNote",
+    },
+```
+
+### New ID command
+
+Provides a new commmand for quickly adding a new ID to the active editor
+
+You can bind this to a keyboard shortcut by adding to your `keybindings.json`:
+
+```json
+    {
+        "key": "alt+shift+i",
+        "command": "vscodeMarkdownNotes.generateNewId",
     },
 ```
 

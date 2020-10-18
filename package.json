@@ -1,8 +1,8 @@
 {
   "name": "vscode-zettel-markdown-notes",
-  "displayName": "Markdown Notes (Zettel Remix)",
+  "displayName": "Markdown Notes (Zettelkasten Remix)",
   "description": "Navigate notes with [[wiki-links]], backlinks, and #tags (like Bear, Roam, etc). Automatically create notes from new inline [[wiki-links]]. Use Peek Definition to preview linked notes.",
-  "version": "0.0.20",
+  "version": "1.0.0",
   "publisher": "maxedmands",
   "repository": {
     "url": "https://github.com/maxedmands/vscode-markdown-notes",
