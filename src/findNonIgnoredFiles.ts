@@ -25,7 +25,7 @@ export default async function findNonIgnoredFiles(
 
 // TODO: https://github.com/Microsoft/vscode/blob/release/1.27/extensions/git/src/api/git.d.ts instead of git shell if possible
 async function filterGitIgnored(uris: Uri[]): Promise<Uri[]> {
-  const workspaceRelativePaths = uris.map((uri) => workspace.asRelativePath(uri, false));
+  const workspaceRelativePaths = uris.map((uri) => workspace.asRelativePath(uri, false).replace(/[ \\'"\$\?\*\[\]\<\>\|;&]/g, '\\$&'));
   for (const workspaceDirectory of workspace.workspaceFolders!) {
     const workspaceDirectoryPath = workspaceDirectory.uri.fsPath;
     try {
@@ -36,7 +36,7 @@ async function filterGitIgnored(uris: Uri[]): Promise<Uri[]> {
             { cwd: workspaceDirectoryPath },
             // https://git-scm.com/docs/git-check-ignore#_exit_status
             (error: ExecException | null, stdout, stderr) => {
-              if (error && error.code !== 0 && error.code !== 1) {
+              if (error && error.code !== 0 && error.code !== 1 && !error.message.match('not a git repository')) {
                 reject(error);
                 return;
               }
@@ -47,7 +47,7 @@ async function filterGitIgnored(uris: Uri[]): Promise<Uri[]> {
         }
       );
 
-      if (stderr) {
+      if (stderr && !stderr.match('not a git repository')) {
         throw new Error(stderr);
       }
 
