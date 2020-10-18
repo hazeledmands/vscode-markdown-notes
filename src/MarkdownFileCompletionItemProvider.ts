@@ -24,9 +24,7 @@ class MarkdownFileCompletionItem extends vscode.CompletionItem {
 export class MarkdownFileCompletionItemProvider implements vscode.CompletionItemProvider {
   public async provideCompletionItems(
     document: vscode.TextDocument,
-    position: vscode.Position,
-    _token: vscode.CancellationToken,
-    context: vscode.CompletionContext
+    position: vscode.Position
   ) {
     const ref = getRefAt(document, position);
     switch (ref.type) {

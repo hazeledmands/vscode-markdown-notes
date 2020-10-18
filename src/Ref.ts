@@ -45,10 +45,6 @@ export function getRefAt(document: vscode.TextDocument, position: vscode.Positio
   let regex: RegExp;
   let range: vscode.Range | undefined;
 
-  // let rp = new RemarkParser(document.getText());
-  // rp.walkWikiLinksAndTags();
-  // let currentNode = rp.getNodeAtPosition(position);
-
   // #tag regexp
   regex = NoteWorkspace.rxTagNoAnchors();
   range = document.getWordRangeAtPosition(position, regex);
@@ -74,23 +70,21 @@ export function getRefAt(document: vscode.TextDocument, position: vscode.Positio
     // So, account for the (exactly) 2 [[  chars at beginning of the match
     // since our replacement words do not contain [[ chars
     let s = new vscode.Position(range.start.line, range.start.character + 2);
-    // And, account for the (exactly) 2 ]]  chars at beginning of the match
+    // And, account for the (exactly) 2 ]]  chars at end of the match
     // since our replacement words do not contain ]] chars
     let e = new vscode.Position(range.end.line, range.end.character - 2);
     // keep the end
     let r = new vscode.Range(s, e);
     ref = document.getText(r);
-    if (ref) {
-      // Check for piped wiki-links
-      ref = NoteWorkspace.cleanPipedWikiLink(ref);
+    // Check for piped wiki-links
+    ref = NoteWorkspace.cleanPipedWikiLink(ref);
 
-      return {
-        type: RefType.WikiLink,
-        word: ref, // .replace(/^\[+/, ''),
-        hasExtension: refHasExtension(ref),
-        range: r, // range,
-      };
-    }
+    return {
+      type: RefType.WikiLink,
+      word: ref, // .replace(/^\[+/, ''),
+      hasExtension: refHasExtension(ref),
+      range: r, // range,
+    };
   }
 
   return NULL_REF;
