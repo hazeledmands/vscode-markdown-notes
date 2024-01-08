@@ -59,6 +59,7 @@ type Config = {
   newNoteDirectory: string;
   previewLabelStyling: PreviewLabelStyling;
   previewShowFileExtension: boolean;
+  generateZettelkastenId: boolean;
 };
 // This class contains:
 // 1. an interface to some of the basic user configurable settings or this extension
@@ -92,6 +93,7 @@ export class NoteWorkspace {
     newNoteDirectory: NoteWorkspace.NEW_NOTE_SAME_AS_ACTIVE_NOTE,
     previewLabelStyling: PreviewLabelStyling.brackets,
     previewShowFileExtension: false,
+    generateZettelkastenId: false,
   };
   static DOCUMENT_SELECTOR = [
     // { scheme: 'file', language: 'markdown' },
@@ -125,6 +127,7 @@ export class NoteWorkspace {
       newNoteDirectory: c.get('newNoteDirectory') as string,
       previewLabelStyling: c.get('previewLabelStyling') as PreviewLabelStyling,
       previewShowFileExtension: c.get('previewShowFileExtension') as boolean,
+      generateZettelkastenId: c.get('generateZettelkastenId') as boolean,
     };
   }
 
@@ -170,6 +173,10 @@ export class NoteWorkspace {
 
   static previewShowFileExtension(): boolean {
     return this.cfg().previewShowFileExtension;
+  }
+
+  static generateZettelkastenId(): boolean {
+    return this.cfg().generateZettelkastenId;
   }
 
   static rxTagNoAnchors(): RegExp {
@@ -432,7 +439,7 @@ export class NoteWorkspace {
       noteDirectory = workspacePath;
     }
 
-    const zettelId = ZettelkastenUtilities.generateId();
+    const zettelId = this.generateZettelkastenId() ? ZettelkastenUtilities.generateId() : '';
     const filename = NoteWorkspace.noteFileNameFromTitle(noteTitle, zettelId);
     const filepath = join(noteDirectory, filename);
 
